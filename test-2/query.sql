@@ -10,4 +10,4 @@ FROM
 WHERE
     worker.id IN (SELECT user_id FROM car)
 GROUP BY
-    worker.first_name;
+    worker.id;

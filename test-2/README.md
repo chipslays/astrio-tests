@@ -36,7 +36,7 @@ CREATE TABLE `child` (
 
 Интерактивное решение на db-fiddle:
 
-* https://www.db-fiddle.com/f/5jy6FkS8fDuWgArHm1F6En/1
+* https://www.db-fiddle.com/f/5jy6FkS8fDuWgArHm1F6En/2
 
 <details>
   <summary>Schema</summary>
@@ -103,5 +103,5 @@ FROM
 WHERE
     worker.id IN (SELECT user_id FROM car)
 GROUP BY
-	  worker.first_name;
+	  worker.id;
 ```
