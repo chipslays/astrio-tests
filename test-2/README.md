@@ -42,63 +42,49 @@ CREATE TABLE `child` (
   <summary>Schema</summary>
 
   ```sql
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 CREATE TABLE `worker` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `first_name` varchar(100) NOT NULL,
-    `last_name` varchar(100) NOT NULL,
-    PRIMARY KEY (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `car` (
-    `user_id` int(11) NOT NULL,
-    `model` varchar(100) DEFAULT NULL
+  `user_id` int(11) NOT NULL,
+  `model` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `child` (
-    `user_id` int(11) NOT NULL,
-    `name` varchar(100) NOT NULL
+  `user_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `worker` (first_name, last_name)
-VALUES ('Ivan', 'Ivanov');
+INSERT INTO `worker` (first_name, last_name) VALUES ('Ivan', 'Ivanov');
+INSERT INTO `worker` (first_name, last_name) VALUES ('Petr', 'Petrov');
+INSERT INTO `worker` (first_name, last_name) VALUES ('Irina', 'Irinova');
+INSERT INTO `worker` (first_name, last_name) VALUES ('Dmitriy', 'Dmitriev');
+INSERT INTO `worker` (first_name, last_name) VALUES ('Test5', 'Testov5');
+INSERT INTO `worker` (first_name, last_name) VALUES ('Test6', 'Testov6');
 
-INSERT INTO `worker` (first_name, last_name)
-VALUES ('Petr', 'Petrov');
+INSERT INTO `car` (user_id, model) VALUES (1, NULL);
+INSERT INTO `car` (user_id, model) VALUES (3, 'Lexus');
+INSERT INTO `car` (user_id, model) VALUES (4, 'Lada');
+INSERT INTO `car` (user_id, model) VALUES (5, 'Tesla');
+INSERT INTO `car` (user_id, model) VALUES (6, 'Uaz');
 
-INSERT INTO `worker` (first_name, last_name)
-VALUES ('Irina', 'Irinova');
+INSERT INTO `child` (user_id, name) VALUES (1, 'Masha');
+INSERT INTO `child` (user_id, name) VALUES (2, 'Grisha');
+INSERT INTO `child` (user_id, name) VALUES (3, 'Kristina');
+INSERT INTO `child` (user_id, name) VALUES (3, 'Danil');
+INSERT INTO `child` (user_id, name) VALUES (4, 'Yulya');
+INSERT INTO `child` (user_id, name) VALUES (6, 'Child6_1');
+INSERT INTO `child` (user_id, name) VALUES (6, 'Child6_2');
+INSERT INTO `child` (user_id, name) VALUES (6, 'Child6_3');
 
-INSERT INTO `worker` (first_name, last_name)
-VALUES ('Dmitriy', 'Dmitriev');
-
-INSERT INTO `car` (user_id, model)
-VALUES (1, NULL);
-
-INSERT INTO `car` (user_id, model)
-VALUES (2, 'none');
-
-INSERT INTO `car` (user_id, model)
-VALUES (3, 'Lexus');
-
-INSERT INTO `car` (user_id, model)
-VALUES (4, 'Lada');
-
-INSERT INTO `child` (user_id, name)
-VALUES (1, 'Masha');
-
-INSERT INTO `child` (user_id, name)
-VALUES (2, 'Grisha');
-
-INSERT INTO `child` (user_id, name)
-VALUES (3, 'Kristina');
-
-INSERT INTO `child` (user_id, name)
-VALUES (3, 'Danil');
-
-INSERT INTO `child` (user_id, name)
-VALUES (4, 'Yulya');
 
   ```
 
@@ -109,14 +95,13 @@ SELECT
     worker.first_name,
     worker.last_name,
     car.model,
-    child.name
+    GROUP_CONCAT(child.name SEPARATOR ', ')
 FROM
     worker
     LEFT JOIN car ON car.user_id = worker.id
     LEFT JOIN child ON child.user_id = worker.id
 WHERE
-    car.model != 'none'
-    OR car.model IS NULL;
+    worker.id IN (SELECT user_id FROM car)
+GROUP BY
+	  worker.first_name;
 ```
-
-Те, у кого нет машины, поле `model` в таблице `cars` имеет значение `none`.
