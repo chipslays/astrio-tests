@@ -36,7 +36,7 @@ CREATE TABLE `child` (
 
 Интерактивное решение на db-fiddle:
 
-* https://www.db-fiddle.com/f/5jy6FkS8fDuWgArHm1F6En/0
+* https://www.db-fiddle.com/f/5jy6FkS8fDuWgArHm1F6En/1
 
 <details>
   <summary>Schema</summary>
